@@ -1,4 +1,23 @@
-rpsGame(5)
+/* simple rock, paper, scissors game built to practice manipulating DOM elements
+** using JavaScript */
+
+// button elements
+const rockButton = document.getElementById("rock");
+const paperButton = document.getElementById("paper");
+const scissorsButton = document.getElementById("scissors");
+const restartButton = document.getElementById("restart");
+
+// button event listeners
+let nextRound = rpsRound;
+rockButton.onclick = () => nextRound("Rock");
+paperButton.onclick = () => nextRound("Paper");
+scissorsButton.onclick = () => nextRound("Scissors");
+restartButton.onclick = () => restartGame();
+
+// globals for score
+let roundCount = 0;
+let playerScore = 0;
+let ComputerScore = 0;
 
 function formatPlayerString(playerString) {
     return playerString.slice(0, 1).toUpperCase() + playerString.slice(1).toLowerCase()
@@ -11,59 +30,89 @@ function computerPlay() {
     return plays[Math.floor(randomNumber)]
 }
 
-function rpsRound() {
+function rpsRound(playersMove) {
     const computersMove = computerPlay()
     let validPlay = false
-    let playersMove = formatPlayerString(prompt("Rock, Paper, or, Scissors"))
-
-
-    while (!validPlay) {
-        if (playersMove === "Rock" || playersMove === "Paper" || playersMove == "Scissors") {
-            validPlay = true;
-        } else {
-            playersMove = formatPlayerString(prompt("Invalid Entry: Choose Rock, Paper, or Scissors"))
-        }
-    }
 
     if (computersMove == playersMove) {
-        return `It's a Tie!: both players chose ${computersMove}`
+        console.log("tie");
+        document.querySelector("#round-outcome").textContent = `When both players select ${computersMove}, it's a tie.`;
+        return;
     }
 
     if (computersMove === "Rock") {
         if (playersMove === "Paper") {
-            return "You Win!: Paper Beats Rock"
+            addPlayerScore("Paper", "Rock");
         } else {
-            return "You Lose!: Rock Beats Scissors"
+            addComputerScore("Scissors", "Rock");
         }
     } else if (computersMove === "Paper") {
         if (playersMove === "Scissors") {
-            return "You Win!: Scissors beats Paper"
+            addPlayerScore("Scissors", "Paper");
         } else {
-            return "You Lose!: Paper beats Rock"
+            addComputerScore("Rock", "Paper");
         }
     } else {
         if (playersMove === "Rock") {
-            return "You Win!: Rock Beats Scissors"
+            addPlayerScore("Rock", "Scissors");
         } else {
-            return "You Lose!: Paper Beats Rock"
+            addComputerScore("Rock", "Paper");
         }
+    }
+
+    if (roundCount === 5) {
+        endGame();
     }
 }
 
-function rpsGame(rounds) {
-    let computerScore = 0;
-    let playerScore = 0;
+function addPlayerScore(userPlay, computerPlay) {
+    ++playerScore;
+    ++roundCount;
 
-    for (let i = 0; i < rounds; ++i) {
-        let gameOutcome = rpsRound()
-        alert(gameOutcome)
-        
-        if (gameOutcome.slice(0, 5) === "You W") {
-            ++playerScore
-        } else if (gameOutcome.slice(0, 5) === "You L") {
-            ++computerScore
-        }
+    // add tally to player score in browser
+    const PlayerScoreParent = document.querySelector("#player-score-container");
+    const pointSquare = document.createElement("div");
+    pointSquare.classList.add("player-score");
+    PlayerScoreParent.appendChild(pointSquare);
+
+    const roundOutcome = document.querySelector("#round-outcome");
+    roundOutcome.textContent = `CONGRATULATIONS!!! ${userPlay} beats ${computerPlay}!!!!!`
+
+}
+
+function addComputerScore(userPlay, computerPlay) {
+    ++ComputerScore;
+    ++roundCount;
+
+    const ComputerScoreParent = document.querySelector("#computer-score-container");
+    const pointSquare = document.createElement("div");
+    pointSquare.classList.add("computer-score");
+    ComputerScoreParent.appendChild(pointSquare);
+
+    const roundOutcome = document.querySelector("#round-outcome");
+    roundOutcome.textContent = `OUCH!!!! This must really hurt. ${computerPlay} beats ${userPlay}!!!!!`
+}
+
+function endGame() {
+    document.querySelector("#round-outcome").textContent = `You ${(playerScore > ComputerScore) ? "Win" : "Lose"}!`
+    nextRound = () => {
+        return;
+    };
+}
+
+function restartGame() {
+    document.querySelector("#round-outcome").textContent = "";
+    roundCount = 0;
+    playerScore = 0;
+    ComputerScore = 0;
+    nextRound = rpsRound;
+
+    removeAllChildNodes(document.querySelector("#player-score-container"));
+    removeAllChildNodes(document.querySelector("#computer-score-container"));
+}
+
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
     }
-
-    alert(`Player Score is ${playerScore}, Computer Score is ${computerScore}: ${(playerScore > computerScore) ? "You Win" : "You Lose"}`)
 }

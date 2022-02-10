@@ -5,9 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="./script.js"></script>
+    <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    
+    <div class="header">ROCK PAPER SCISSORS</div>    
+    <div class="instructions">
+        <p id="intro">Welcome to an absolutely rousing game of Rock, Paper, Scissors where we remove the social element 
+            from one of the most boring games in existence! To make it easy for you, we are limiting play to 
+            five rounds. We wouldn't want you to develop eye strain. Do your best to win! I bet you can do it!</p>
+    </div>
+    <div class="game-container">
+
+        <div class="gameplay-buttons">
+            <button id= "rock" type="button">Rock</button>
+            <button id="paper" type="button">Paper</button>
+            <button id="scissors" type="button">Scissor</button>
+        </div>
+
+        <div id="score-container">
+            <p id="round-outcome"></p>
+            <div id ="scores">SCORE</div>
+            <div id="player-score-container"></div>
+            <div id="computer-score-container"></div>
+        </div>
+
+        <button id = "restart" type="button">Restart Game</button>
+    </div>
 </body>
 </html>
